@@ -1,0 +1,35 @@
+dataset_contract:
+  contour: rag_documents
+  domain: not_specified
+  annotation_type: not_specified
+  primary_key: doc_id
+  event_time_field: updated_at
+  required_fields:
+    - doc_id
+    - title
+    - text
+    - source
+    - language
+    - updated_at
+  optional_fields:
+    - sensitivity
+    - metadata
+  quality_dimensions:
+    dirty_data:
+      - schema_validity
+      - completeness
+      - duplicate_ratio
+      - pattern_checks
+      - language_ratio
+    staleness_and_drift:
+      - freshness
+      - coverage_by_time_bucket
+      - update_lag
+      - psi
+      - embedding_drift_extension
+    annotation_qa:
+      - configurable_optional
+    bias:
+      - representation_by_slice
+      - slice_distribution_shift
+      - slice_quality_reporting

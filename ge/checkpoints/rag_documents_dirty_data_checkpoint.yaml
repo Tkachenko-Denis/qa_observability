@@ -1,0 +1,8 @@
+name: rag_documents_dirty_data_checkpoint
+config_version: 1.0
+class_name: Checkpoint
+validations:
+  - batch_request:
+      datasource_name: rag_documents_files
+      data_asset_name: rag_documents
+    expectation_suite_name: rag_documents_dirty_data_suite

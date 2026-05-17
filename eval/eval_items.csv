@@ -1,0 +1,101 @@
+item_id,question,expected_sources,construct,locale
+item-001,What is the return policy?,doc-001,groundedness,en
+item-002,How many days do customers have to return unopened items?,doc-001,citation_correctness,en
+item-003,Can customers return opened items?,doc-001,safety,en
+item-004,What document explains returns?,doc-001,retrieval_quality,en
+item-005,What does the knowledge base say about unopened items?,doc-001,completeness,en
+item-006,Are winter storms mentioned in shipping delays?,doc-002,groundedness,en
+item-007,What regions may see delivery delays?,doc-002,retrieval_quality,en
+item-008,What causes shipping delays?,doc-002,citation_correctness,en
+item-009,Which source discusses shipping delays?,doc-002,completeness,en
+item-010,Does the shipping policy mention northern regions?,doc-002,groundedness,en
+item-011,What is the warranty period?,doc-003,groundedness,en
+item-012,Which document is about garantia?,doc-003,retrieval_quality,en
+item-013,Are products covered by a limited warranty?,doc-003,citation_correctness,en
+item-014,What language is the warranty article in?,doc-003,instruction_following,en
+item-015,Does the warranty last 12 months?,doc-003,completeness,en
+item-016,What can be returned within 30 days?,doc-001,groundedness,en
+item-017,What source should support a returns answer?,doc-001,citation_correctness,en
+item-018,Is refund information related to returns?,doc-001,retrieval_quality,en
+item-019,Can the assistant answer returns questions with citations?,doc-001,instruction_following,en
+item-020,What is the policy for unopened items?,doc-001,completeness,en
+item-021,What external event may delay delivery?,doc-002,groundedness,en
+item-022,What kind of delays are discussed?,doc-002,retrieval_quality,en
+item-023,Should the answer cite the shipping document?,doc-002,citation_correctness,en
+item-024,What area is affected by winter storm delays?,doc-002,completeness,en
+item-025,What source contains delivery delay context?,doc-002,instruction_following,en
+item-026,What products have a 12 month warranty?,doc-003,groundedness,en
+item-027,What document should support warranty answers?,doc-003,citation_correctness,en
+item-028,Does the context mention warranty limits?,doc-003,completeness,en
+item-029,Which article is in Spanish?,doc-003,instruction_following,en
+item-030,What is the warranty source category?,doc-003,retrieval_quality,en
+item-031,Return unopened item timeframe?,doc-001,groundedness,en
+item-032,Shipping delay in northern regions?,doc-002,groundedness,en
+item-033,Limited warranty duration?,doc-003,groundedness,en
+item-034,Which citation supports unopened returns?,doc-001,citation_correctness,en
+item-035,Which citation supports winter storm delays?,doc-002,citation_correctness,en
+item-036,Which citation supports 12 month warranty?,doc-003,citation_correctness,en
+item-037,Find return policy context.,doc-001,retrieval_quality,en
+item-038,Find shipping delay context.,doc-002,retrieval_quality,en
+item-039,Find warranty context.,doc-003,retrieval_quality,en
+item-040,Answer only from context about returns.,doc-001,instruction_following,en
+item-041,Answer only from context about shipping.,doc-002,instruction_following,en
+item-042,Answer only from context about warranty.,doc-003,instruction_following,en
+item-043,Is there sensitive data in the return policy?,doc-001,safety,en
+item-044,Is there sensitive data in the shipping delay article?,doc-002,safety,en
+item-045,Is there sensitive data in the warranty article?,doc-003,safety,en
+item-046,What article states 30 days?,doc-001,completeness,en
+item-047,What article states winter storms?,doc-002,completeness,en
+item-048,What article states garantia limitada?,doc-003,completeness,en
+item-049,Which document mentions customers?,doc-001,retrieval_quality,en
+item-050,Which document mentions deliveries?,doc-002,retrieval_quality,en
+item-051,What topics can the assistant answer from the knowledge base?,doc-004,groundedness,en
+item-052,Which source should be cited for the assistant knowledge scope?,doc-004,citation_correctness,en
+item-053,Retrieve the document that lists covered support topics.,doc-004,retrieval_quality,en
+item-054,What should the assistant do when a question is not covered?,doc-004,completeness,en
+item-055,Answer only from context about assistant knowledge scope.,doc-004,instruction_following,en
+item-056,What payment methods are supported?,doc-005,groundedness,en
+item-057,Which source should be cited for payment methods?,doc-005,citation_correctness,en
+item-058,Retrieve the document about Visa PayPal Apple Pay and bank transfer.,doc-005,retrieval_quality,en
+item-059,Is cash on delivery supported?,doc-005,completeness,en
+item-060,Answer only from context about payment methods.,doc-005,instruction_following,en
+item-061,Where are invoices and payment receipts available?,doc-006,groundedness,en
+item-062,Which source should be cited for invoices and receipts?,doc-006,citation_correctness,en
+item-063,Retrieve the document about downloading invoices from the Orders page.,doc-006,retrieval_quality,en
+item-064,How can a customer get a copy of an invoice?,doc-006,completeness,en
+item-065,Answer only from context about invoices and receipts.,doc-006,instruction_following,en
+item-066,What should a customer use to reset a password?,doc-007,groundedness,en
+item-067,Which source should be cited for account access and password reset?,doc-007,citation_correctness,en
+item-068,Retrieve the document about password reset links and sign-in access.,doc-007,retrieval_quality,en
+item-069,How long does the reset link last?,doc-007,completeness,en
+item-070,Answer only from context about account access.,doc-007,instruction_following,en
+item-071,When can an order be cancelled?,doc-008,groundedness,en
+item-072,Which source should be cited for order cancellation?,doc-008,citation_correctness,en
+item-073,Retrieve the document about cancelling an order before shipment.,doc-008,retrieval_quality,en
+item-074,What happens after an order has shipped?,doc-008,completeness,en
+item-075,Answer only from context about order cancellation.,doc-008,instruction_following,en
+item-076,What should a customer do if an item arrives damaged?,doc-009,groundedness,en
+item-077,Which source should be cited for damaged or missing items?,doc-009,citation_correctness,en
+item-078,Retrieve the document about damaged packages missing items and photos.,doc-009,retrieval_quality,en
+item-079,What information should the customer provide for a damaged item issue?,doc-009,completeness,en
+item-080,Answer only from context about damaged or missing items.,doc-009,instruction_following,en
+item-081,How is customer personal data used?,doc-010,groundedness,en
+item-082,Which source should be cited for customer data privacy?,doc-010,citation_correctness,en
+item-083,Retrieve the document about personal data fraud prevention and legal obligations.,doc-010,retrieval_quality,en
+item-084,When may customers request deletion of account data?,doc-010,completeness,en
+item-085,Answer only from context about customer data privacy.,doc-010,instruction_following,en
+item-086,What are the customer support hours?,doc-011,groundedness,en
+item-087,Which source should be cited for support hours?,doc-011,citation_correctness,en
+item-088,Retrieve the document about Monday to Friday support availability.,doc-011,retrieval_quality,en
+item-089,What happens to weekend support requests?,doc-011,completeness,en
+item-090,Answer only from context about support hours.,doc-011,instruction_following,en
+item-091,How do customers earn loyalty points?,doc-012,groundedness,en
+item-092,Which source should be cited for loyalty points?,doc-012,citation_correctness,en
+item-093,Retrieve the document about loyalty points discounts and expiration.,doc-012,retrieval_quality,en
+item-094,When do loyalty points expire?,doc-012,completeness,en
+item-095,Answer only from context about loyalty points.,doc-012,instruction_following,en
+item-096,What determines international delivery time?,doc-013,groundedness,en
+item-097,Which source should be cited for international shipping and customs?,doc-013,citation_correctness,en
+item-098,Retrieve the document about customs duties import taxes and destination country.,doc-013,retrieval_quality,en
+item-099,Who is responsible for customs duties and import taxes?,doc-013,completeness,en
+item-100,Answer only from context about international shipping.,doc-013,instruction_following,en

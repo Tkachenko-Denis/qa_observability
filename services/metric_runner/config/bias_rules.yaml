@@ -1,0 +1,25 @@
+bias_rules:
+  thresholds:
+    metrics:
+      min_slice_representation:
+        comparator: lt
+        hard_fail: 0.1
+        soft_warn: 0.15
+      slice_label_distribution_gap:
+        comparator: gt
+        hard_fail: 0.35
+        soft_warn: 0.2
+      min_slice_quality:
+        comparator: lt
+        hard_fail: 0.6
+        soft_warn: 0.75
+      bias_score:
+        comparator: gt
+        hard_fail: 0.4
+        soft_warn: 0.25
+  actions:
+    recommendations:
+      min_slice_representation: rebalance low-coverage slices before publication
+      slice_label_distribution_gap: inspect label shift and slice-specific annotation policy
+      min_slice_quality: audit slice-level quality and annotation consistency
+      bias_score: trigger slice-level review and mitigation plan

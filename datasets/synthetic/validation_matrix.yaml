@@ -1,0 +1,55 @@
+validation_matrix:
+  contour: rag_and_eval_synthetic
+  scenarios:
+    - category: dirty_data
+      dataset: datasets/synthetic/rag_documents_dirty_v1.jsonl
+      degradations:
+        - duplicates
+        - missing_values
+        - invalid_timestamp
+        - invalid_language
+        - invalid_text_length
+        - unicode_normalization_issue
+      expected_signals:
+        - schema_validity_ratio_down
+        - completeness_ratio_down
+        - duplicate_ratio_up
+        - hard_gate_fail
+    - category: staleness_drift
+      dataset: datasets/synthetic/rag_documents_stale_v1.jsonl
+      baseline_dataset: datasets/samples/rag_documents_recent_v2.jsonl
+      degradations:
+        - stale_timestamps
+        - missing_recent_buckets
+        - temporal_distribution_shift
+      expected_signals:
+        - freshness_hours_up
+        - update_lag_hours_avg_up
+        - coverage_ratio_28d_down
+        - temporal_psi_up
+        - hard_gate_fail
+    - category: annotation_qa
+      dataset: datasets/synthetic/annotation_eval_disagreement_v1.jsonl
+      baseline_dataset: datasets/samples/annotation_eval_consensus_v1.jsonl
+      degradations:
+        - label_disagreement
+        - annotator_confusion
+        - high_uncertainty_examples
+      expected_signals:
+        - cohens_kappa_down
+        - krippendorffs_alpha_down
+        - dawid_skene_error_rate_up
+        - reannotation_queue_non_empty
+        - hard_gate_fail
+    - category: bias
+      dataset: datasets/synthetic/annotation_bias_skewed_v1.jsonl
+      baseline_dataset: datasets/samples/annotation_bias_balanced_v1.jsonl
+      degradations:
+        - slice_underrepresentation
+        - label_distribution_skew
+        - lower_slice_quality
+      expected_signals:
+        - min_slice_representation_down
+        - slice_label_distribution_gap_up
+        - bias_score_up
+        - hard_gate_fail

@@ -1,0 +1,12 @@
+{"example_id":"bx-101","annotator_id":"ann-a","label":"relevant","text":"Refund timeline","slice":"returns"}
+{"example_id":"bx-101","annotator_id":"ann-b","label":"relevant","text":"Refund timeline","slice":"returns"}
+{"example_id":"bx-102","annotator_id":"ann-a","label":"relevant","text":"Refund status update","slice":"returns"}
+{"example_id":"bx-102","annotator_id":"ann-b","label":"relevant","text":"Refund status update","slice":"returns"}
+{"example_id":"bx-103","annotator_id":"ann-a","label":"relevant","text":"Refund approved","slice":"returns"}
+{"example_id":"bx-103","annotator_id":"ann-b","label":"relevant","text":"Refund approved","slice":"returns"}
+{"example_id":"bx-104","annotator_id":"ann-a","label":"relevant","text":"Return pickup","slice":"returns"}
+{"example_id":"bx-104","annotator_id":"ann-b","label":"relevant","text":"Return pickup","slice":"returns"}
+{"example_id":"bx-105","annotator_id":"ann-a","label":"irrelevant","text":"Auth reset","slice":"auth"}
+{"example_id":"bx-105","annotator_id":"ann-b","label":"relevant","text":"Auth reset","slice":"auth"}
+{"example_id":"bx-106","annotator_id":"ann-a","label":"irrelevant","text":"Invoice address","slice":"billing"}
+{"example_id":"bx-106","annotator_id":"ann-b","label":"relevant","text":"Invoice address","slice":"billing"}

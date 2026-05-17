@@ -1,0 +1,89 @@
+{
+  "run_id": "fcd86a4e-d746-4745-a3b7-1b16e959a34b",
+  "status": "passed",
+  "check_count": 11,
+  "failed_check_count": 0,
+  "checks": [
+    {
+      "entity_type": "documents",
+      "check_name": "documents_exist",
+      "status": "passed",
+      "metric_value": 13.0,
+      "details": {}
+    },
+    {
+      "entity_type": "documents",
+      "check_name": "content_hash_unique",
+      "status": "passed",
+      "metric_value": 0.0,
+      "details": {
+        "duplicates": []
+      }
+    },
+    {
+      "entity_type": "documents",
+      "check_name": "source_not_null",
+      "status": "passed",
+      "metric_value": 0.0,
+      "details": {}
+    },
+    {
+      "entity_type": "chunks",
+      "check_name": "chunks_exist",
+      "status": "passed",
+      "metric_value": 13.0,
+      "details": {}
+    },
+    {
+      "entity_type": "chunks",
+      "check_name": "chunk_text_not_empty",
+      "status": "passed",
+      "metric_value": 0.0,
+      "details": {}
+    },
+    {
+      "entity_type": "chunks",
+      "check_name": "embedding_coverage",
+      "status": "passed",
+      "metric_value": 1.0,
+      "details": {
+        "missing_embeddings": 0
+      }
+    },
+    {
+      "entity_type": "eval_items",
+      "check_name": "eval_items_min_50",
+      "status": "passed",
+      "metric_value": 50.0,
+      "details": {}
+    },
+    {
+      "entity_type": "eval_items",
+      "check_name": "expected_sources_not_empty",
+      "status": "passed",
+      "metric_value": 0.0,
+      "details": {}
+    },
+    {
+      "entity_type": "trace_events",
+      "check_name": "trace_events_exist",
+      "status": "passed",
+      "metric_value": 1557.0,
+      "details": {}
+    },
+    {
+      "entity_type": "responses",
+      "check_name": "responses_exist",
+      "status": "passed",
+      "metric_value": 262.0,
+      "details": {}
+    },
+    {
+      "entity_type": "responses",
+      "check_name": "responses_validation_status_present",
+      "status": "passed",
+      "metric_value": 0.0,
+      "details": {}
+    }
+  ]
+}

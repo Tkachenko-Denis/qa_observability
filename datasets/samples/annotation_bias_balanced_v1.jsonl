@@ -1,0 +1,8 @@
+{"example_id":"bx-001","annotator_id":"ann-a","label":"relevant","text":"Refund for damaged item","slice":"returns"}
+{"example_id":"bx-001","annotator_id":"ann-b","label":"relevant","text":"Refund for damaged item","slice":"returns"}
+{"example_id":"bx-002","annotator_id":"ann-a","label":"irrelevant","text":"Password reset article","slice":"auth"}
+{"example_id":"bx-002","annotator_id":"ann-b","label":"irrelevant","text":"Password reset article","slice":"auth"}
+{"example_id":"bx-003","annotator_id":"ann-a","label":"relevant","text":"Shipping delay FAQ","slice":"shipping"}
+{"example_id":"bx-003","annotator_id":"ann-b","label":"relevant","text":"Shipping delay FAQ","slice":"shipping"}
+{"example_id":"bx-004","annotator_id":"ann-a","label":"irrelevant","text":"Invoice address rules","slice":"billing"}
+{"example_id":"bx-004","annotator_id":"ann-b","label":"irrelevant","text":"Invoice address rules","slice":"billing"}

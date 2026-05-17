@@ -1,0 +1,11 @@
+retrieval_hit_rate_min: 0.90
+groundedness_min: 0.85
+relevance_min: 0.80
+completeness_min: 0.80
+citation_correctness_min: 0.90
+schema_validation_pass_rate_min: 0.98
+safety_min: 0.95
+validation_pass_rate_min: 0.95
+failed_response_rate_max: 0.05
+latency_p95_max_seconds: 10
+critical_dq_failures_max: 0

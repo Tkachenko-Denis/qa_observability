@@ -1,0 +1,29 @@
+{
+  "name": "rag_documents_dirty_data_suite",
+  "expectations": [
+    {
+      "type": "expect_column_to_exist",
+      "kwargs": {"column": "doc_id"}
+    },
+    {
+      "type": "expect_column_to_exist",
+      "kwargs": {"column": "text"}
+    },
+    {
+      "type": "expect_column_values_to_not_be_null",
+      "kwargs": {"column": "doc_id"}
+    },
+    {
+      "type": "expect_column_values_to_match_regex",
+      "kwargs": {"column": "language", "regex": "^(en|es|de|fr)$"}
+    },
+    {
+      "type": "expect_column_value_lengths_to_be_between",
+      "kwargs": {"column": "text", "min_value": 20, "max_value": 4000}
+    }
+  ],
+  "meta": {
+    "phase": "phase_2_dirty_data",
+    "contour": "rag_documents"
+  }
+}

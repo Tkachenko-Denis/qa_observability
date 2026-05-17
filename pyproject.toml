@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmops-dq-observability"
+version = "0.1.0"
+description = "MVP Data Quality Management / DQ Observability system for LLMOps"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.14.0",
+    "fastapi>=0.115.0",
+    "langchain-core>=0.3.0",
+    "prometheus-client>=0.21.0",
+    "psycopg[binary]>=3.2.0",
+    "pydantic-settings>=2.6.0",
+    "pyyaml>=6.0.2",
+    "python-json-logger>=2.0.7",
+    "sqlalchemy>=2.0.36",
+    "uvicorn[standard]>=0.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.28.0",
+    "pytest>=8.3.0",
+    "pytest-cov>=6.0.0",
+]
+dq = [
+    "great-expectations>=1.2.0",
+    "mlflow>=2.19.0",
+    "pymilvus>=2.5.0",
+    "langfuse>=2.60.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["services/api"]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["services/api"]

@@ -1,0 +1,12 @@
+{"example_id":"ex-001","annotator_id":"ann-a","label":"relevant","text":"Refund eligibility for damaged item","slice":"returns"}
+{"example_id":"ex-001","annotator_id":"ann-b","label":"relevant","text":"Refund eligibility for damaged item","slice":"returns"}
+{"example_id":"ex-001","annotator_id":"ann-c","label":"relevant","text":"Refund eligibility for damaged item","slice":"returns"}
+{"example_id":"ex-002","annotator_id":"ann-a","label":"irrelevant","text":"Password reset instructions","slice":"auth"}
+{"example_id":"ex-002","annotator_id":"ann-b","label":"irrelevant","text":"Password reset instructions","slice":"auth"}
+{"example_id":"ex-002","annotator_id":"ann-c","label":"irrelevant","text":"Password reset instructions","slice":"auth"}
+{"example_id":"ex-003","annotator_id":"ann-a","label":"relevant","text":"Shipping delay FAQ","slice":"shipping"}
+{"example_id":"ex-003","annotator_id":"ann-b","label":"relevant","text":"Shipping delay FAQ","slice":"shipping"}
+{"example_id":"ex-003","annotator_id":"ann-c","label":"relevant","text":"Shipping delay FAQ","slice":"shipping"}
+{"example_id":"ex-004","annotator_id":"ann-a","label":"irrelevant","text":"Corporate tax address","slice":"billing"}
+{"example_id":"ex-004","annotator_id":"ann-b","label":"irrelevant","text":"Corporate tax address","slice":"billing"}
+{"example_id":"ex-004","annotator_id":"ann-c","label":"irrelevant","text":"Corporate tax address","slice":"billing"}

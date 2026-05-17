@@ -1,0 +1,17 @@
+.venv/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.egg-info/
+*.zip
+пользовательское/
+
+airflow/logs/*
+!airflow/logs/.gitkeep
+
+mlflow/eval_runs/*
+!mlflow/eval_runs/.gitkeep
+
+.env
+.DS_Store
+Thumbs.db

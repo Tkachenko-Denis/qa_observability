@@ -1,0 +1,154 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "quality_gate_status{gate=\"latest\"}", "legendFormat": "quality gate"}],
+      "title": "Quality Gate Status",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "orange", "value": null}, {"color": "green", "value": 1}]}}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "id": 2,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "llmops_readiness_status", "legendFormat": "{{status}}"}],
+      "title": "LLMOps Readiness",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "id": 3,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "sum(runtime_dq_failed_checks)", "legendFormat": "failed runtime DQ checks"}],
+      "title": "Runtime DQ Failures",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"mappings": [], "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 0.85}]}}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "id": 4,
+      "options": {"colorMode": "background", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [{"expr": "eval_metric_value{metric_name=\"groundedness\"}", "legendFormat": "{{model}} {{prompt_version}}"}],
+      "title": "Eval Groundedness",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 4},
+      "id": 5,
+      "targets": [
+        {"expr": "sum by (endpoint, status) (rate(http_requests_total[5m]))", "legendFormat": "{{endpoint}} {{status}}"},
+        {"expr": "sum by (endpoint) (rate(http_errors_total[5m]))", "legendFormat": "{{endpoint}} errors"}
+      ],
+      "title": "API Requests And Errors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 4},
+      "id": 6,
+      "targets": [
+        {"expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m])))", "legendFormat": "api p95"},
+        {"expr": "histogram_quantile(0.95, sum by (le) (rate(llm_latency_seconds_bucket[5m])))", "legendFormat": "llm p95"},
+        {"expr": "histogram_quantile(0.95, sum by (le) (rate(retrieval_latency_seconds_bucket[5m])))", "legendFormat": "retrieval p95"}
+      ],
+      "title": "Latency P95",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 11},
+      "id": 7,
+      "targets": [
+        {"expr": "rate(llm_input_tokens_total[5m])", "legendFormat": "input tokens/s"},
+        {"expr": "rate(llm_output_tokens_total[5m])", "legendFormat": "output tokens/s"},
+        {"expr": "rate(llm_errors_total[5m])", "legendFormat": "llm errors/s"}
+      ],
+      "title": "LLM Tokens And Errors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 11},
+      "id": 8,
+      "targets": [
+        {"expr": "rate(retrieval_empty_results_total[5m])", "legendFormat": "empty retrieval/s"},
+        {"expr": "eval_metric_value{metric_name=\"source_hit\"}", "legendFormat": "eval source hit"},
+        {"expr": "eval_metric_value{metric_name=\"relevance\"}", "legendFormat": "eval relevance"}
+      ],
+      "title": "Retrieval Quality",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 18},
+      "id": 9,
+      "targets": [
+        {"expr": "eval_metric_value", "legendFormat": "{{metric_name}}"},
+        {"expr": "groundedness_score or relevance_score or completeness_score or citation_correctness_score or safety_score", "legendFormat": "{{__name__}}"}
+      ],
+      "title": "LLM Eval Scores",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 18},
+      "id": 10,
+      "targets": [
+        {"expr": "dq_run_status", "legendFormat": "{{category}} {{status}}"},
+        {"expr": "dq_checks_failed_total", "legendFormat": "failed {{category}}"}
+      ],
+      "title": "DQ Runs And Failed Checks",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 25},
+      "id": 11,
+      "targets": [
+        {"expr": "dq_missing_ratio or dq_duplicate_ratio or dq_schema_validity_ratio or dq_completeness_ratio", "legendFormat": "{{__name__}} {{dataset}}"},
+        {"expr": "dq_freshness_hours or dq_drift_psi", "legendFormat": "{{__name__}} {{dataset}}"}
+      ],
+      "title": "Data Quality And Drift",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 25},
+      "id": 12,
+      "targets": [
+        {"expr": "dq_annot_alpha or dq_annot_kappa or dq_annot_error_rate", "legendFormat": "{{__name__}} {{dataset}}"},
+        {"expr": "dq_bias_score or dq_slice_distribution_gap or dq_slice_quality_min", "legendFormat": "{{__name__}} {{dataset}}"}
+      ],
+      "title": "Annotation QA And Bias",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["dq", "llmops", "mvp", "rag", "quality-gates"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "LLMOps DQ Observability MVP",
+  "uid": "llmops-dq-observability-mvp",
+  "version": 2,
+  "weekStart": ""
+}

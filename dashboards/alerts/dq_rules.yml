@@ -1,0 +1,75 @@
+groups:
+  - name: dq-mvp
+    rules:
+      - alert: DQRunQueuedTooLong
+        expr: dq_run_status{status="queued"} > 0
+        for: 30m
+        labels:
+          severity: warning
+          category: pipeline
+        annotations:
+          summary: "DQ run is still queued"
+          description: "A dataset version has not been processed within 30 minutes."
+      - alert: DQFreshnessTooHigh
+        expr: dq_freshness_hours > 72
+        for: 15m
+        labels:
+          severity: warning
+          category: staleness
+        annotations:
+          summary: "Dataset freshness threshold exceeded"
+          description: "Latest dataset event is older than 72 hours."
+      - alert: DQTemporalDriftPSIHigh
+        expr: dq_drift_psi > 0.1
+        for: 15m
+        labels:
+          severity: warning
+          category: drift
+        annotations:
+          summary: "Temporal PSI above warning threshold"
+          description: "Event-time distribution drift requires deeper validation."
+      - alert: DQAnnotationAgreementLow
+        expr: dq_annot_alpha < 0.75
+        for: 15m
+        labels:
+          severity: warning
+          category: annotation_qa
+        annotations:
+          summary: "Annotation agreement degraded"
+          description: "Krippendorff alpha is below the warning threshold."
+      - alert: DQBiasScoreHigh
+        expr: dq_bias_score > 0.25
+        for: 15m
+        labels:
+          severity: warning
+          category: bias
+        annotations:
+          summary: "Bias score exceeded warning threshold"
+          description: "Slice imbalance or label distribution skew requires review."
+      - alert: LLMOpsReadinessFailed
+        expr: llmops_readiness_status{status="failed"} == 1
+        for: 5m
+        labels:
+          severity: critical
+          category: llmops_readiness
+        annotations:
+          summary: "LLMOps readiness gate failed"
+          description: "The latest readiness snapshot is not eligible for publication or deployment."
+      - alert: LLMOpsQualityGateFailed
+        expr: quality_gate_status{gate="latest"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          category: quality_gate
+        annotations:
+          summary: "Quality gate failed"
+          description: "The latest quality gate result blocks the LLMOps pipeline."
+      - alert: LLMOpsEvalGroundednessLow
+        expr: eval_metric_value{metric_name="groundedness"} < 0.85
+        for: 5m
+        labels:
+          severity: warning
+          category: eval
+        annotations:
+          summary: "Eval groundedness below threshold"
+          description: "Aggregate eval groundedness is below the configured minimum."

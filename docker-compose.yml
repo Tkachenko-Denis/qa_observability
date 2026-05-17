@@ -1,0 +1,333 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: dq-postgres
+    environment:
+      POSTGRES_DB: dq_observability
+      POSTGRES_USER: dq
+      POSTGRES_PASSWORD: dq
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dq -d dq_observability"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+
+  api-migrate:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: dq-api-migrate
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://dq:dq@postgres:5432/dq_observability
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+    command: alembic -c services/api/alembic.ini upgrade head
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: dq-api
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://dq:dq@postgres:5432/dq_observability
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).read()\"",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    volumes:
+      - ./scripts:/app/scripts
+      - ./datasets:/app/datasets
+      - ./eval:/app/eval
+      - ./config:/app/config
+      - ./mlflow:/app/mlflow
+      - ./ge/data_docs:/app/ge/data_docs
+    depends_on:
+      api-migrate:
+        condition: service_completed_successfully
+      mlflow:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: dq-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./dashboards/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./dashboards/alerts/dq_rules.yml:/etc/prometheus/alerts/dq_rules.yml:ro
+    depends_on:
+      api:
+        condition: service_healthy
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    container_name: dq-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./dashboards/grafana/provisioning:/etc/grafana/provisioning
+      - ./dashboards/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+
+  ui:
+    build:
+      context: .
+      dockerfile: services/ui/Dockerfile
+    container_name: dq-ui
+    environment:
+      UI_BACKEND_URL: http://api:8000
+      UI_PROMETHEUS_URL: http://prometheus:9090
+      UI_GRAFANA_URL: http://localhost:3000
+      UI_MLFLOW_URL: http://localhost:5000
+      UI_LANGFUSE_URL: http://localhost:3010
+      UI_AIRFLOW_URL: http://localhost:8080
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.20.0
+    container_name: dq-mlflow
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=2).read()\"",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    volumes:
+      - mlflow_data:/mlflow
+
+  milvus-etcd:
+    image: quay.io/coreos/etcd:v3.5.18
+    container_name: dq-milvus-etcd
+    profiles:
+      - milvus
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: "1000"
+      ETCD_QUOTA_BACKEND_BYTES: "4294967296"
+      ETCD_SNAPSHOT_COUNT: "50000"
+    command: >
+      etcd
+      -advertise-client-urls=http://127.0.0.1:2379
+      -listen-client-urls=http://0.0.0.0:2379
+      --data-dir=/etcd
+    volumes:
+      - milvus_etcd:/etcd
+
+  milvus-minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: dq-milvus-minio
+    profiles:
+      - milvus
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    command: minio server /minio_data --console-address ":9001"
+    ports:
+      - "9001:9001"
+    volumes:
+      - milvus_minio:/minio_data
+
+  milvus:
+    image: milvusdb/milvus:v2.5.11
+    container_name: dq-milvus
+    profiles:
+      - milvus
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_ENDPOINTS: milvus-etcd:2379
+      MINIO_ADDRESS: milvus-minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    volumes:
+      - milvus_data:/var/lib/milvus
+    depends_on:
+      - milvus-etcd
+      - milvus-minio
+
+  langfuse-postgres:
+    image: postgres:16
+    container_name: dq-langfuse-postgres
+    profiles:
+      - langfuse
+    environment:
+      POSTGRES_DB: langfuse
+      POSTGRES_USER: langfuse
+      POSTGRES_PASSWORD: langfuse
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langfuse -d langfuse"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - langfuse_postgres:/var/lib/postgresql/data
+
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: dq-langfuse
+    profiles:
+      - langfuse
+    environment:
+      DATABASE_URL: postgresql://langfuse:langfuse@langfuse-postgres:5432/langfuse
+      NEXTAUTH_URL: http://localhost:3010
+      NEXTAUTH_SECRET: change-me-local-nextauth-secret
+      SALT: change-me-local-salt
+      TELEMETRY_ENABLED: "false"
+    ports:
+      - "3010:3000"
+    depends_on:
+      langfuse-postgres:
+        condition: service_healthy
+
+  airflow-init:
+    build:
+      context: .
+      dockerfile: docker/airflow.Dockerfile
+    image: final-airflow:latest
+    container_name: dq-airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dq:dq@postgres:5432/airflow_metadata
+      AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+      DQ_API_BASE_URL: http://api:8000
+      DATABASE_URL: postgresql+psycopg://dq:dq@postgres:5432/dq_observability
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      QUALITY_THRESHOLDS_PATH: /opt/airflow/config/quality_thresholds.yaml
+    command: >
+      bash -c "airflow db migrate &&
+      airflow users create
+      --username admin
+      --password admin
+      --firstname DQ
+      --lastname Admin
+      --role Admin
+      --email admin@example.com || true"
+    user: "50000:0"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./scripts:/opt/airflow/scripts
+      - ./services/api:/opt/airflow/services/api
+      - ./datasets:/opt/airflow/datasets
+      - ./eval:/opt/airflow/eval
+      - ./config:/opt/airflow/config
+      - airflow_mlflow:/opt/airflow/mlflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  airflow-webserver:
+    image: final-airflow:latest
+    container_name: dq-airflow-webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dq:dq@postgres:5432/airflow_metadata
+      AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+      DQ_API_BASE_URL: http://api:8000
+      DATABASE_URL: postgresql+psycopg://dq:dq@postgres:5432/dq_observability
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      QUALITY_THRESHOLDS_PATH: /opt/airflow/config/quality_thresholds.yaml
+    command: webserver
+    user: "50000:0"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./scripts:/opt/airflow/scripts
+      - ./services/api:/opt/airflow/services/api
+      - ./datasets:/opt/airflow/datasets
+      - ./eval:/opt/airflow/eval
+      - ./config:/opt/airflow/config
+      - airflow_mlflow:/opt/airflow/mlflow
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+
+  airflow-scheduler:
+    image: final-airflow:latest
+    container_name: dq-airflow-scheduler
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dq:dq@postgres:5432/airflow_metadata
+      AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "False"
+      DQ_API_BASE_URL: http://api:8000
+      DATABASE_URL: postgresql+psycopg://dq:dq@postgres:5432/dq_observability
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      QUALITY_THRESHOLDS_PATH: /opt/airflow/config/quality_thresholds.yaml
+    command: scheduler
+    user: "50000:0"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./scripts:/opt/airflow/scripts
+      - ./services/api:/opt/airflow/services/api
+      - ./datasets:/opt/airflow/datasets
+      - ./eval:/opt/airflow/eval
+      - ./config:/opt/airflow/config
+      - airflow_mlflow:/opt/airflow/mlflow
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  mlflow_data:
+  airflow_mlflow:
+  milvus_etcd:
+  milvus_minio:
+  milvus_data:
+  langfuse_postgres:

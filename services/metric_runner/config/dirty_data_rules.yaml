@@ -1,0 +1,58 @@
+dirty_data_rules:
+  constraints:
+    allowed_languages:
+      - en
+      - es
+      - de
+      - fr
+    expected_primary_language: en
+    min_text_length: 20
+    max_text_length: 4000
+  thresholds:
+    metrics:
+      schema_validity_ratio:
+        comparator: lt
+        hard_fail: 0.95
+        soft_warn: 0.99
+      completeness_ratio:
+        comparator: lt
+        hard_fail: 0.97
+        soft_warn: 0.995
+      missing_ratio:
+        comparator: gt
+        hard_fail: 0.03
+        soft_warn: 0.005
+      duplicate_free_ratio:
+        comparator: lt
+        hard_fail: 0.98
+        soft_warn: 0.995
+      duplicate_ratio:
+        comparator: gt
+        hard_fail: 0.02
+        soft_warn: 0.005
+      pattern_validity_ratio:
+        comparator: lt
+        hard_fail: 0.95
+        soft_warn: 0.99
+      text_length_validity_ratio:
+        comparator: lt
+        hard_fail: 0.95
+        soft_warn: 0.99
+      normalization_ratio:
+        comparator: lt
+        hard_fail: 0.95
+        soft_warn: 0.99
+      language_ratio:
+        comparator: lt
+        hard_fail: 0.60
+        soft_warn: 0.80
+  actions:
+    schema_validity_ratio: block dataset publication and review invalid rows
+    completeness_ratio: block dataset publication and fill missing required fields
+    missing_ratio: review null-heavy rows and source connector behavior
+    duplicate_free_ratio: deduplicate rows before publication
+    duplicate_ratio: deduplicate rows before publication
+    pattern_validity_ratio: inspect malformed fields and language tags
+    text_length_validity_ratio: trim or remove malformed text payloads
+    normalization_ratio: normalize Unicode text before publication
+    language_ratio: review source slice mix and routing policy

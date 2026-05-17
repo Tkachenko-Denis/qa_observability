@@ -1,0 +1,31 @@
+annotation_qa_rules:
+  thresholds:
+    metrics:
+      cohens_kappa:
+        comparator: lt
+        hard_fail: 0.6
+        soft_warn: 0.75
+      krippendorffs_alpha:
+        comparator: lt
+        hard_fail: 0.6
+        soft_warn: 0.75
+      min_class_agreement:
+        comparator: lt
+        hard_fail: 0.5
+        soft_warn: 0.7
+      dawid_skene_error_rate:
+        comparator: gt
+        hard_fail: 0.3
+        soft_warn: 0.15
+      min_annotator_quality:
+        comparator: lt
+        hard_fail: 0.55
+        soft_warn: 0.7
+  actions:
+    reannotation_threshold: 0.25
+    recommendations:
+      cohens_kappa: review pairwise disagreement and annotation guidelines
+      krippendorffs_alpha: review task ambiguity and labeling instructions
+      min_class_agreement: inspect class-specific confusion and slice drift
+      dawid_skene_error_rate: send high-uncertainty examples to reannotation
+      min_annotator_quality: audit low-quality annotator behavior and confusion patterns

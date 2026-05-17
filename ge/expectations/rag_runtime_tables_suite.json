@@ -1,0 +1,14 @@
+{
+  "expectation_suite_name": "rag_runtime_tables_suite",
+  "expectations": [
+    {"expectation_type": "expect_table_row_count_to_be_between", "kwargs": {"table": "documents", "min_value": 1}},
+    {"expectation_type": "expect_column_values_to_not_be_null", "kwargs": {"table": "documents", "column": "doc_id"}},
+    {"expectation_type": "expect_column_values_to_be_unique", "kwargs": {"table": "documents", "column": "content_hash"}},
+    {"expectation_type": "expect_table_row_count_to_be_between", "kwargs": {"table": "chunks", "min_value": 1}},
+    {"expectation_type": "expect_column_values_to_not_be_null", "kwargs": {"table": "chunks", "column": "chunk_text"}},
+    {"expectation_type": "expect_column_values_to_be_in_set", "kwargs": {"table": "chunks", "column": "embedding_status", "value_set": ["indexed"]}},
+    {"expectation_type": "expect_table_row_count_to_be_between", "kwargs": {"table": "eval_items", "min_value": 50}},
+    {"expectation_type": "expect_table_row_count_to_be_between", "kwargs": {"table": "trace_events", "min_value": 1}},
+    {"expectation_type": "expect_table_row_count_to_be_between", "kwargs": {"table": "responses", "min_value": 1}}
+  ]
+}
